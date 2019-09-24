@@ -1,59 +1,43 @@
 import React from 'react';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {
-  Text, Image, StyleSheet, Dimensions, ImageBackground, StatusBar,
-} from 'react-native';
+import Repository from '~/components/repository';
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  fileName: {
-    fontWeight: 'bold',
-    marginTop: 5,
-  },
-  instructions: {
-    color: '#DDD',
-    fontSize: 14,
-    marginTop: 20,
-    textAlign: 'center',
-  },
-  logo: {
-    height: Dimensions.get('window').height * 0.11,
-    marginVertical: Dimensions.get('window').height * 0.11,
-    width: Dimensions.get('window').height * 0.11 * (1950 / 662),
-  },
-  welcome: {
-    color: '#fff',
-    fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-});
+import { 
+  Container, Title, Form, Input, Submit, List, 
+} from './styles';
 
-const Main = () => (
-  <ImageBackground
-    source={{
-      uri: 'https://s3-sa-east-1.amazonaws.com/rocketseat-cdn/background.png',
-    }}
-    style={styles.container}
-    resizeMode="cover"
-  >
-    <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
-    <Image
-      source={{
-        uri: 'https://s3-sa-east-1.amazonaws.com/rocketseat-cdn/rocketseat_logo.png',
-      }}
-      style={styles.logo}
-      resizeMode="contain"
-    />
-    <Text style={styles.welcome}>Bem-vindo ao Template Básico!</Text>
-    <Text style={styles.instructions}>Essa é a tela principal da sua aplicação =)</Text>
-    <Text style={styles.instructions}>Você pode editar a tela no arquivo:</Text>
-    <Text style={[styles.instructions, styles.fileName]}>src/pages/Main/index.js</Text>
-  </ImageBackground>
-);
+export default function Main() {
+  return (
+    <Container>
+      <Title>Repositórios</Title>
+      <Form>
+        <Input 
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="Procurar repositório..."
+        />
+        <Submit onPress={() => {}}>
+          <Icon name="add" size={22} color="#999" />
+        </Submit>
+      </Form>
+      <List 
+        keyboardSholdPersistTaps="handled"
+        data={[
+          {
+            id: 1,
+            name: "unform",
+            description: "React JS teste ListView",
+            stars: 1234,
+            forks: 133,
+          }
+        ]}
+        keyExtractor={item => String(item.id)}
+        renderItem={({ item }) => (
+            <Repository data={ item } />
+        )}
+      />
 
-export default Main;
+    </Container>
+  );
+}
