@@ -27,7 +27,7 @@ export const Input = styled.TextInput.attrs({
 })`
   flex: 1;
   padding: 12px 15px;
-  border-radius: 20px;
+  border-radius: 50px;
   font-size: 16px;
   color: #FFF;
   background: #FFF; 
@@ -36,7 +36,7 @@ export const Submit = styled.TouchableOpacity`
   background: #FFF;
   margin-left: 10px;
   justify-content: center;
-  border-radius: 20px;
+  border-radius: 50px;
   padding: 0 14px;
 `;
 

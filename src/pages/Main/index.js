@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Repository from '~/components/repository';
@@ -8,6 +8,12 @@ import {
 } from './styles';
 
 export default function Main() {
+  const [input, setInput] = useState('');
+
+  function handleAddRepository(){
+    console.tron.log(input);
+  }
+
   return (
     <Container>
       <Title>Repositórios</Title>
@@ -17,7 +23,8 @@ export default function Main() {
           autoCorrect={false}
           placeholder="Procurar repositório..."
         />
-        <Submit onPress={() => {}}>
+        <Submit onPress={handleAddRepository
+        }>
           <Icon name="add" size={22} color="#999" />
         </Submit>
       </Form>
