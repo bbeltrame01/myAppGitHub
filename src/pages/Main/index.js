@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {  keyboard  } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import api from '~/services/api';
+import getRealm from '~/services/realm';
 
 import Repository from '~/components/repository';
 
@@ -9,9 +12,60 @@ import {
 
 export default function Main() {
   const [input, setInput] = useState('');
+  const [error, setError] = useState(false);
+  const [repositories, setRepositories] = useState([]);
 
-  function handleAddRepository(){
-    console.tron.log(input);
+  useEffect(() => {
+    async function loadRepositories() {
+      const realm = await getRealm();
+
+      const data = realm.objects('Repository').sorted('stars', true);
+
+      setRepositories(data);
+    }
+
+    loadRepositories();
+  }, []);
+
+  async function saveRepository(repository) {
+    const data = {
+      id: repository.id,
+      name: repository.name,
+      fullName: repository.full_name,
+      description: repository.description,
+      stars: repository.stargazers_count,
+      forks: repository.forks_count,
+    };
+
+    const realm = await getRealm();
+
+    realm.write(() => {
+      realm.create('Repository', data,  'modified');
+    });
+
+    return data;
+  }
+
+  async function handleAddRepository(){
+    try {
+      const response = await api.get(`/repos/${input}`);
+
+      await saveRepository(response.data);
+
+      setInput('');
+      setError(false);
+      keyboard.dismiss();
+    } catch (error) {
+      setError(true);     
+    }
+  }
+
+  async function handleRefreshRepository(repository) {
+    const response = await api.get(`/repos/${repository.fullName}`);
+
+    const data = await saveRepository(response.data);
+
+    setRepositories(repositories.map(repo => repo.id === data.id ? data : repo));
   }
 
   return (
@@ -19,6 +73,9 @@ export default function Main() {
       <Title>Repositórios</Title>
       <Form>
         <Input 
+          value={input}
+          error={error}
+          onChangeText={setInput}
           autoCapitalize="none"
           autoCorrect={false}
           placeholder="Procurar repositório..."
@@ -30,18 +87,10 @@ export default function Main() {
       </Form>
       <List 
         keyboardSholdPersistTaps="handled"
-        data={[
-          {
-            id: 1,
-            name: "unform",
-            description: "React JS teste ListView",
-            stars: 1234,
-            forks: 133,
-          }
-        ]}
+        data={repositories}
         keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
-            <Repository data={ item } />
+            <Repository data={ item } onRefresh={() => handleRefreshRepository(item)} />
         )}
       />
 

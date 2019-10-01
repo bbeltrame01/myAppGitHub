@@ -29,8 +29,9 @@ export const Input = styled.TextInput.attrs({
   padding: 12px 15px;
   border-radius: 50px;
   font-size: 16px;
-  color: #FFF;
+  color: #333;
   background: #FFF; 
+  border: 2px solid ${props => props.error ? '#FF7272' : '#FFF'};
 `;
 export const Submit = styled.TouchableOpacity`
   background: #FFF;
